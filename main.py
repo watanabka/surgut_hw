@@ -3,39 +3,18 @@ import datetime
 from telebot import types
 import telebot
 import config
-<<<<<<< HEAD
-=======
-
->>>>>>> d1996205cb2920ddf307b53f220d1217abadabf8
 bot = telebot.TeleBot(config.TOKEN)
 choose_item = ''
 
 @bot.message_handler(commands=['add'])
 def process_start_command1(message):
-    keyboard = types.InlineKeyboardMarkup(row_width=3)
+    keyboard = types.InlineKeyboardMarkup(row_width=2)
     button_create_hm_next_day = types.InlineKeyboardButton(text="Next day", callback_data='nextday')
     button_create_hm_choose = types.InlineKeyboardButton(text="Choose day", callback_data='chooseday')
 
     keyboard.add(button_create_hm_next_day, button_create_hm_choose)
 
     bot.send_message(message.chat.id, 'На какой день записывать?', reply_markup=keyboard)
-
-# @bot.message_handler(commands=['show'])
-<<<<<<< HEAD
-# # def process_start_command(message):
-# #     keyboard = types.ReplyKeyboardMarkup(row_width=1, one_time_keyboard=True, resize_keyboard=True)
-# #     button_show_hm_next_day = types.InlineKeyboardButton(text="Показать ДЗ на следующий день", callback_data="shownextday")
-# #     button_show_hm_choose = types.InlineKeyboardButton(text="Показать ДЗ на выбранный день",callback_data="test1")
-# #     keyboard.add(button_show_hm_next_day, button_show_hm_choose)
-# #     bot.send_message(message.chat.id, 'На какой день показать?', reply_markup = keyboard)
-=======
-# def process_start_command(message):
-#     keyboard = types.ReplyKeyboardMarkup(row_width=1, one_time_keyboard=True, resize_keyboard=True)
-#     button_show_hm_next_day = types.InlineKeyboardButton(text="Показать ДЗ на следующий день", callback_data="shownextday")
-#     button_show_hm_choose = types.InlineKeyboardButton(text="Показать ДЗ на выбранный день",callback_data="test1")
-#     keyboard.add(button_show_hm_next_day, button_show_hm_choose)
-#     bot.send_message(message.chat.id, 'На какой день показать?', reply_markup = keyboard)
->>>>>>> d1996205cb2920ddf307b53f220d1217abadabf8
 
 def save_home_work(message):
     global choose_item
@@ -52,7 +31,7 @@ def save_home_work(message):
 
 
 @bot.callback_query_handler(func=lambda call: True)
-def sdfsdfdsf(call):
+def ChooseItem(call):
     global choose_item
     if call.message:
         if call.data == 'nextday':
@@ -69,8 +48,4 @@ def sdfsdfdsf(call):
     bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='Next day', reply_markup=None)
 
 
-<<<<<<< HEAD
 bot.polling(none_stop=True, timeout=1000)
-=======
-bot.polling(none_stop=True)
->>>>>>> d1996205cb2920ddf307b53f220d1217abadabf8
