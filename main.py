@@ -9,10 +9,10 @@ choose_item = ''
 @bot.message_handler(commands=['add'])
 def process_start_command1(message):
     keyboard = types.InlineKeyboardMarkup(row_width=2)
-    button_create_hm_next_day = types.InlineKeyboardButton(text="Next day", callback_data='nextday')
-    button_create_hm_choose = types.InlineKeyboardButton(text="Choose day", callback_data='chooseday')
+    button_hm_next_day = types.InlineKeyboardButton(text="Next day", callback_data='nextday')
+    button_hm_choose = types.InlineKeyboardButton(text="Choose day", callback_data='chooseday')
 
-    keyboard.add(button_create_hm_next_day, button_create_hm_choose)
+    keyboard.add(button_hm_choose, button_hm_next_day)
 
     bot.send_message(message.chat.id, 'На какой день записывать?', reply_markup=keyboard)
 
