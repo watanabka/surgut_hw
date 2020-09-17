@@ -1,76 +1,55 @@
-import mysqldatabase
-import datetime
 from telebot import types
 import telebot
 import config
-<<<<<<< HEAD
-=======
-
->>>>>>> d1996205cb2920ddf307b53f220d1217abadabf8
+import Items
 bot = telebot.TeleBot(config.TOKEN)
-choose_item = ''
 
-@bot.message_handler(commands=['add'])
-def process_start_command1(message):
-    keyboard = types.InlineKeyboardMarkup(row_width=3)
-    button_create_hm_next_day = types.InlineKeyboardButton(text="Next day", callback_data='nextday')
-    button_create_hm_choose = types.InlineKeyboardButton(text="Choose day", callback_data='chooseday')
+@bot.message_handler(commands=['start'])
+def start(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=2, one_time_keyboard=True)
+    write = types.KeyboardButton('Записать домашнее задание')
+    see = types.KeyboardButton('Просмотреть домашнее задание')
+    markup.add(write, see)
+    send_mess = f"Приветствуем, {message.from_user.first_name} {message.from_user.last_name}! \nНаш бот для домашнего задание в вашем использование"
+    bot.send_message(message.chat.id, send_mess, parse_mode='html', reply_markup=markup)
 
-    keyboard.add(button_create_hm_next_day, button_create_hm_choose)
-
-    bot.send_message(message.chat.id, 'На какой день записывать?', reply_markup=keyboard)
-
-# @bot.message_handler(commands=['show'])
-<<<<<<< HEAD
-# # def process_start_command(message):
-# #     keyboard = types.ReplyKeyboardMarkup(row_width=1, one_time_keyboard=True, resize_keyboard=True)
-# #     button_show_hm_next_day = types.InlineKeyboardButton(text="Показать ДЗ на следующий день", callback_data="shownextday")
-# #     button_show_hm_choose = types.InlineKeyboardButton(text="Показать ДЗ на выбранный день",callback_data="test1")
-# #     keyboard.add(button_show_hm_next_day, button_show_hm_choose)
-# #     bot.send_message(message.chat.id, 'На какой день показать?', reply_markup = keyboard)
-=======
-# def process_start_command(message):
-#     keyboard = types.ReplyKeyboardMarkup(row_width=1, one_time_keyboard=True, resize_keyboard=True)
-#     button_show_hm_next_day = types.InlineKeyboardButton(text="Показать ДЗ на следующий день", callback_data="shownextday")
-#     button_show_hm_choose = types.InlineKeyboardButton(text="Показать ДЗ на выбранный день",callback_data="test1")
-#     keyboard.add(button_show_hm_next_day, button_show_hm_choose)
-#     bot.send_message(message.chat.id, 'На какой день показать?', reply_markup = keyboard)
->>>>>>> d1996205cb2920ddf307b53f220d1217abadabf8
-
-def save_home_work(message):
-    global choose_item
+@bot.message_handler(func=lambda call:True)
+def write(message):
     try:
-        tomorrow = datetime.date.today() + datetime.timedelta(1)
-        sql = "INSERT INTO customers (id, datetime, item, task) VALUES (%s, %s, %s, %s)"
-        val = (str(message.chat.id), str(tomorrow), str(choose_item), str(message.text))
-        mysqldatabase.mycursor.execute(sql, val)
-        mysqldatabase.mydb.commit()
-        bot.send_message(message.chat.id, 'Дз записано!')
-        markup = types.ReplyKeyboardRemove(selective=True)
+        if message.text == 'Записать домашнее задание':
+            keyboard = types.InlineKeyboardMarkup()
+            monday = types.InlineKeyboardButton(text='Понедельник', callback_data ="monday")
+            tuesday = types.InlineKeyboardButton(text='Вторник', callback_data ="tuesday")
+            wednesday = types.InlineKeyboardButton(text='Среда', callback_data ="wednesday")
+            thursday = types.InlineKeyboardButton(text='Четверг', callback_data ="thursday")
+            friday = types.InlineKeyboardButton(text='Пятница', callback_data ="friday")
+            saturday = types.InlineKeyboardButton(text='Суббота', callback_data ="saturday")
+            keyboard.add(monday, tuesday, wednesday, thursday, friday, saturday)
+            bot.send_message(message.chat.id, "На какой день недели будем записывать?", reply_markup=keyboard)
     except Exception as e:
-        bot.reply_to(message.chat.id, 'Oppss')
-
+        bot.reply_to(message.chat.id, 'Упс..')
 
 @bot.callback_query_handler(func=lambda call: True)
-def sdfsdfdsf(call):
-    global choose_item
+def ChooseItem(call):
     if call.message:
-        if call.data == 'nextday':
-            keyboard = types.InlineKeyboardMarkup(row_width=2)
-            button_russian = types.InlineKeyboardButton(text="Русский", callback_data='russian')
-            button_mat = types.InlineKeyboardButton(text="Математика", callback_data='matematika')
-            keyboard.add(button_russian, button_mat)
-            bot.send_message(call.message.chat.id, 'Выберите предмет.', reply_markup=keyboard)
-        if call.data == 'russian':
-            choose_item = 'Russian'
-            markup = types.ReplyKeyboardRemove(selective=True)
-            msg = bot.send_message(call.message.chat.id, "Запиши: ")
-            bot.register_next_step_handler(msg, save_home_work)
-    bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='Next day', reply_markup=None)
+        if call.data == 'monday':
+            items_show(call.message)
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text='Выберите урок:', reply_markup=None)
+
+def items_show(message):
+    markup = types.InlineKeyboardMarkup()
+    buttons = []
+    for number_1 in range(0, len(Items.school_item_rus)):
+        buttons.append(types.InlineKeyboardButton(text=Items.school_item_rus[number_1], callback_data=Items.school_item_rus[number_1]))
+    for button in buttons:
+        markup.add(button)
+    bot.send_message(message.chat.id, 'Выберите действие: ', reply_markup=markup)
 
 
-<<<<<<< HEAD
-bot.polling(none_stop=True, timeout=1000)
-=======
+
+
+
+
+
+
 bot.polling(none_stop=True)
->>>>>>> d1996205cb2920ddf307b53f220d1217abadabf8
